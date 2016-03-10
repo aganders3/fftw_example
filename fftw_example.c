@@ -7,21 +7,32 @@
 static PyObject *
 fftw_example_guru(PyObject *self, PyObject* args)
 {
-    int n = 2;
-    npy_intp dims[3] = {n, n, n};
-    PyArrayObject* arr = (PyArrayObject*)PyArray_ZEROS(3, dims, NPY_COMPLEX64, 0);
-    PyObject_Print(PyArray_BASE(arr), stdout, Py_PRINT_RAW);
+    PyArrayObject* arr;
+    if (!PyArg_ParseTuple(args, "O", &arr))
+    {
+        return NULL;
+    }
+
+    npy_intp* arr_dims = PyArray_DIMS(arr);
+    
+    int n = arr_dims[0];
+    fftwf_complex* arr_ptr = (fftwf_complex*)(PyArray_GETPTR1(arr, 0));
+    arr_ptr[0][0] = 1;
+    arr_ptr[1][0] = 1;
+    arr_ptr[2][0] = 1;
+    arr_ptr[3][0] = 1;
+
+    printf("INPUT DATA:\n");
+    PyObject_Print((PyObject*)(arr), stdout, Py_PRINT_RAW);
     printf("\n");
 
-    fftwf_complex* arr_ptr = (fftwf_complex*)(PyArray_GetPtr(arr, 0));
-
     int rank = 1;
-    fftw_iodim guru_dims[rank];
+    fftwf_iodim guru_dims[rank];
     guru_dims[0].n = n;
     guru_dims[0].is = guru_dims[0].os = n*n;
 
     int howmany_rank = 2;
-    fftw_iodim howmany_dims[howmany_rank];
+    fftwf_iodim howmany_dims[howmany_rank];
     howmany_dims[0].n = n;
     howmany_dims[0].is = howmany_dims[0].os = 1;
     howmany_dims[1].n = n;
@@ -36,7 +47,21 @@ fftw_example_guru(PyObject *self, PyObject* args)
                                               arr_ptr, arr_ptr,
                                               FFTW_FORWARD, FFTW_ESTIMATE);
 
-    fftwf_print_plan(guru_plan);
+    if(guru_plan)
+    {
+        printf("FFT PLAN:");
+        fftwf_print_plan(guru_plan);
+        printf("\n");
+        fftwf_execute(guru_plan);
+    }
+    else
+    {
+        printf("FFTW PLAN IS NULL\n");
+    }
+
+    printf("OUTPUT DATA:\n");
+    PyObject_Print((PyObject*)(arr), stdout, Py_PRINT_RAW);
+    printf("\n");
 
     Py_INCREF(Py_None);
     return Py_None;

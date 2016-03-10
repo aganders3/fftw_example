@@ -3,7 +3,7 @@ import numpy
 
 module1 = Extension('fftw_example',
                     include_dirs = [numpy.get_include(), '/home/ash/gpi_stack/include'],
-                    libraries = ['fftw3f'],
+                    libraries = ['fftw3', 'fftw3f'],
                     sources = ['fftw_example.c'])
 
 setup (name = 'FFTW_Example',
