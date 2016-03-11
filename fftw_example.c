@@ -58,7 +58,7 @@ fftw_example_guru(PyObject *self, PyObject* args)
     {
         printf("FFTW PLAN IS NULL\n");
         printf("This would cause a segfault if we executed the plan.\n");
-        printf("Instead we will exit gracefully.");
+        printf("Instead we will exit gracefully.\n");
         Py_INCREF(Py_None);
         return Py_None;
     }
