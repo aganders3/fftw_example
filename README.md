@@ -11,6 +11,8 @@ You will also need to build the `fftw_example` package itself and install it in 
 
     python setup.py build install
     
+This assumes your Anaconda installation is in `~/miniconda`, you will need to update the include path in `setup.py` if it's not.
+
 The error is not present when running in the `nomkl` environment:
 ```
 (nomkl)[ash@localhost fftw_example]$ python test_fftw_example.py 
